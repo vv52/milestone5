@@ -46,7 +46,11 @@ public class PathFinder
         bool found = false;
         while(found == false && pathQueue.IsEmpty() == false)
         {
-            //TODO: Implement Dijkstra's algorithm!
+            //TODO: Fix new Tile referencing and begin tracking weight!
+            //      Probably need to instance a new Tile and use tileFactory
+            //          for each adjacent Tile that is to be checked.
+            //      Write logic to check which adjacent path is the shortest
+            //          as well as update overall path weight
 
         	//Pop path off priority queue
             TilePath current = pathQueue.Dequeue();
