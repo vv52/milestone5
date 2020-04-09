@@ -62,12 +62,18 @@ public class PathFinder
             }
             else
             {
-            	//Create temp Tile for readability
-            	Tile lastTile = current.GetMostRecentTile();
+            	//Create temp variables
+            	Vector3Int temp = new Vector3Int();
+            	var newTile = map.GetTile(start);
 
             	//Check y+1 adjacent tile and add to queue if not at end
+            	temp = current.GetMostRecentTile().Position;
+            	temp.y++;
+            	newTile = map.GetTile(temp);
+            	Tile newTileUp = tileFactory.GetTile(newTile.name);
+            	newTileUp.Position = temp;
             	TilePath newPathUp = new TilePath(current);
-            	newPathUp.AddTileToPath(lastTile.Position.up);
+            	newPathUp.AddTileToPath(newTileUp);
             	if (newPathUp.GetMostRecentTile().Position == end)
             	{
             		found = true;
@@ -78,8 +84,13 @@ public class PathFinder
             	}
 
             	//Check y-1 adjacent tile and add to queue if not at end
+            	temp = current.GetMostRecentTile().Position;
+            	temp.y--;
+            	newTile = map.GetTile(temp);
+            	Tile newTileDown = tileFactory.GetTile(newTile.name);
+            	newTileDown.Position = temp;
             	TilePath newPathDown = new TilePath(current);
-            	newPathDown.AddTileToPath(lastTile.Position.down);
+            	newPathDown.AddTileToPath(newTileDown);
             	if (newPathDown.GetMostRecentTile().Position == end)
             	{
             		found = true;
@@ -90,8 +101,13 @@ public class PathFinder
             	}
 
             	//Check x-1 adjacent tile and add to queue if not at end
+            	temp = current.GetMostRecentTile().Position;
+            	temp.x--;
+            	newTile = map.GetTile(temp);
+            	Tile newTileLeft = tileFactory.GetTile(newTile.name);
+            	newTileLeft.Position = temp;
             	TilePath newPathLeft = new TilePath(current);
-            	newPathLeft.AddTileToPath(lastTile.Position.left);
+            	newPathLeft.AddTileToPath(newTileLeft);
             	if (newPathLeft.GetMostRecentTile().Position == end)
             	{
             		found = true;
@@ -102,8 +118,13 @@ public class PathFinder
             	}
 
             	//Check x+1 adjacent tile and add to queue if not at end
+            	temp = current.GetMostRecentTile().Position;
+            	temp.x++;
+            	newTile = map.GetTile(temp);
+            	Tile newTileRight = tileFactory.GetTile(newTile.name);
+            	newTileRight.Position = temp;
             	TilePath newPathRight = new TilePath(current);
-            	newPathRight.AddTileToPath(lastTile.Position.right);
+            	newPathRight.AddTileToPath(newTileRight);
             	if (newPathRight.GetMostRecentTile().Position == end)
             	{
             		found = true;
@@ -112,6 +133,20 @@ public class PathFinder
             	{
             		pathQueue.Enqueue(newPathRight);
             	}
+
+				/*
+            	Tile shortest = new Tile();
+            	shortest.Weight = 9999;
+            	Tile[] Tiles = { newTileUp, newTileDown, newTileLeft, newTileRight };
+            	for (int i = 0; i < 4; i++)
+            	{
+            		if (Tiles[i].Weight < shortest.Weight)
+            		{
+            			shortest = Tiles[i];
+            		}
+            	}
+           		start = shortest.Position;
+           		*/
             }
 
             discoveredPath = pathQueue.GetFirst();
