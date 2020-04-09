@@ -46,14 +46,18 @@ public class PathFinder
         bool found = false;
         while(found == false && pathQueue.IsEmpty() == false)
         {
-            //TODO: Fix new Tile referencing and begin tracking weight!
-            //      Probably need to instance a new Tile and use tileFactory
-            //          for each adjacent Tile that is to be checked.
-            //      Write logic to check which adjacent path is the shortest
-            //          as well as update overall path weight
+            //TODO: After some experimentation, I have found that
+            //      my pathfinding is not working because of something
+            //      specifically happening at line 124 and the other
+            //      three directions with similar lines.
+            //
+            //      I think that I am pulling and checking tiles
+            //      improperly, I am going to go back through the
+            //      TileFactory and see where my process is incorrect
 
         	//Pop path off priority queue
-            TilePath current = pathQueue.Dequeue();
+            TilePath current = pathQueue.GetFirst();
+            pathQueue.Dequeue();
 
             //Check if popped path contains end tile
             if (current.GetMostRecentTile().Position == end)
@@ -66,6 +70,56 @@ public class PathFinder
             	Vector3Int temp = new Vector3Int();
             	var newTile = map.GetTile(start);
 
+
+            	/* start new attempt
+            	Tile shortest = new Tile();
+            	shortest.Weight = 9999;
+
+            	temp = current.GetMostRecentTile().Position;
+            	temp.y++;
+            	newTile = map.GetTile(temp);
+            	Tile newTileUp = tileFactory.GetTile(newTile.name);
+            	newTileUp.Position = temp;
+            	temp = current.GetMostRecentTile().Position;
+            	temp.y--;
+            	newTile = map.GetTile(temp);
+            	Tile newTileDown = tileFactory.GetTile(newTile.name);
+            	newTileDown.Position = temp;
+            	temp = current.GetMostRecentTile().Position;
+            	temp.x--;
+            	newTile = map.GetTile(temp);
+            	Tile newTileLeft = tileFactory.GetTile(newTile.name);
+            	newTileLeft.Position = temp;
+            	temp = current.GetMostRecentTile().Position;
+            	temp.x++;
+            	newTile = map.GetTile(temp);
+            	Tile newTileRight = tileFactory.GetTile(newTile.name);
+            	newTileRight.Position = temp;
+
+            	Tile[] Tiles = { newTileUp, newTileDown, newTileLeft, newTileRight };
+            	for (int i = 0; i < 4; i++)
+            	{
+            		if (Tiles[i].Weight < shortest.Weight)
+            		{
+            			shortest = Tiles[i];
+            		}
+            	}
+
+            	TilePath newPathShortest = new TilePath(current);
+            	newPathShortest.AddTileToPath(newTileUp);
+
+            	if (newPathShortest.GetMostRecentTile().Position == end)
+            	{
+            		found = true;
+            		discoveredPath = newPathShortest;
+            	}
+            	else
+            	{
+            		pathQueue.Enqueue(newPathShortest);
+            	}
+           		// end new attempt */
+
+           		
             	//Check y+1 adjacent tile and add to queue if not at end
             	temp = current.GetMostRecentTile().Position;
             	temp.y++;
@@ -77,6 +131,7 @@ public class PathFinder
             	if (newPathUp.GetMostRecentTile().Position == end)
             	{
             		found = true;
+            		discoveredPath = newPathUp;
             	}
             	else
             	{
@@ -94,6 +149,7 @@ public class PathFinder
             	if (newPathDown.GetMostRecentTile().Position == end)
             	{
             		found = true;
+            		discoveredPath = newPathDown;
             	}
             	else
             	{
@@ -111,6 +167,7 @@ public class PathFinder
             	if (newPathLeft.GetMostRecentTile().Position == end)
             	{
             		found = true;
+            		discoveredPath = newPathLeft;
             	}
             	else
             	{
@@ -128,11 +185,13 @@ public class PathFinder
             	if (newPathRight.GetMostRecentTile().Position == end)
             	{
             		found = true;
+            		discoveredPath = newPathRight;
             	}
             	else
             	{
             		pathQueue.Enqueue(newPathRight);
             	}
+            	
 
 				/*
             	Tile shortest = new Tile();
@@ -149,11 +208,10 @@ public class PathFinder
            		*/
             }
 
+            //NOTE: when I comment the following line out
+            //      I get better results, however, I should
+            //      be able to make it happen with this line
             discoveredPath = pathQueue.GetFirst();
-
-            //This line ensures that we don't get an infinite loop in Unity.
-            //You will need to remove it in order for your pathfinding algorithm to work.
-            //found = true;
         }
         return discoveredPath;
     }
