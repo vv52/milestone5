@@ -46,84 +46,51 @@ public class PathFinder
         bool found = false;
         while(found == false && pathQueue.IsEmpty() == false)
         {
-            //Pop path off priority queue
-            TilePath current = pathQueue.Dequeue();
+        	// Pop the top item off of the priority queue
+        	TilePath current = new TilePath(pathQueue.Dequeue());
+        	var tempTile = map.GetTile(start);
+            var currentPosition = current.GetMostRecentTile().Position;
 
-            //Check if popped path contains end tile
-            if (current.GetMostRecentTile().Position == end)
-            {
-            	found = true;
-            }
-            else
-            {
-            	var tempTile = map.GetTile(start);
-            	var currentPosition = current.GetMostRecentTile().Position;
-            	
-            	/*
-            	Vector3Int up = new Vector3Int(currentPosition.x, currentPosition.y + 1, currentPosition.z);
-            	Vector3Int down = new Vector3Int(currentPosition.x, currentPosition.y - 1, currentPosition.z);
-            	Vector3Int left = new Vector3Int(currentPosition.x - 1, currentPosition.y, currentPosition.z);
-            	Vector3Int right = new Vector3Int(currentPosition.x + 1, currentPosition.y, currentPosition.z);
-            	Vector3Int[] adjacentTilePos = new Vector3Int[] {up, down, left, right};
-            	List<Tile> adjacentTiles = new List<Tile>();
-            	
-            	for (int i = 0; i < 4; i++)
-            	{
-	            	tempTile = map.GetTile(adjacentTilePos[i]);
-	            	var newTile = tileFactory.GetTile(tempTile.name);
-			        newTile.Position = new Vector3Int(adjacentTilePos[i].x, adjacentTilePos[i].y, adjacentTilePos[i].z);
-			        adjacentTiles.Add(newTile);
-            	}
-
-            	for (int i = 0; i < 4; i++)
-            	{
-	            	if (adjacentTiles[i] != null)
-	            	{
-		            	TilePath newPath = new TilePath(current);
-		            	newPath.AddTileToPath(adjacentTiles[i]);
-		            	
-		            	if (adjacentTiles[i].Position == end)
-		            	{
-		            		found = true;
-		            	}
-		            	else
-		            	{
-		            		pathQueue.Enqueue(newPath);
-		            	}
-	            	}
-            	}
-            	*/
-        
-           		///*
-           		Vector3Int up = new Vector3Int(currentPosition.x, currentPosition.y + 1, currentPosition.z);
+        	if (currentPosition == end)
+        	{
+        		//If the item contains the final tile in the path, you are done.
+        		found = true;
+        		discoveredPath = current;
+        	}
+        	else
+        	{	
+        		// If not, for each of the tile's neighbors (there should be 4 since we're using square tiles)
+        		Vector3Int up = new Vector3Int(currentPosition.x, currentPosition.y + 1, currentPosition.z);
             	Vector3Int down = new Vector3Int(currentPosition.x, currentPosition.y - 1, currentPosition.z);
             	Vector3Int left = new Vector3Int(currentPosition.x - 1, currentPosition.y, currentPosition.z);
             	Vector3Int right = new Vector3Int(currentPosition.x + 1, currentPosition.y, currentPosition.z);
             	Vector3Int[] adjacentTiles = new Vector3Int[] { up, down, left, right };
 
+            	// Create a new path with the additional tile.
             	for (int i = 0; i < adjacentTiles.Length; i++)
             	{
             		tempTile = map.GetTile(adjacentTiles[i]);
 	            	if (tempTile != null)
 	            	{
-	            		Tile newTile = tileFactory.GetTile(tempTile.name);
+	            		Tile newTile = new Tile(tileFactory.GetTile(tempTile.name));
 		            	newTile.Position = adjacentTiles[i];
 		            	TilePath newPath = new TilePath(current);
 		            	newPath.AddTileToPath(newTile);
 		            	
 		            	if (newTile.Position == end)
 		            	{
+		            		// If that path contains the final tile, you're done.
 		            		found = true;
+		            		discoveredPath = newPath;
 		            	}
 		            	else
 		            	{
+		            		// If not, add that path back into the Priority Queue.
 		            		pathQueue.Enqueue(newPath);
 		            	}
 	            	}
             	}
-            	//*/
-            }
-            discoveredPath = pathQueue.GetFirst();
+        	}			
         }
         return discoveredPath;
     }
