@@ -9,14 +9,30 @@ public class TileFactory
 
     private TileFactory()
     {
-        _tiles.Add("OutdoorsGround_0", new Tile() { 
+        _tiles.Add("OutdoorsGround_0", new Tile()
+        { 
             Name = "Grass",
             Weight = 5
+        });
+        _tiles.Add("OutdoorsGround_4", new Tile()
+        {
+            Name = "Flowers",
+            Weight = 3
+        });
+        _tiles.Add("OutdoorsGround_15", new Tile()
+        {
+            Name = "Grassy Road",
+            Weight = 4
         });
         _tiles.Add("OutdoorsGround_6", new Tile()
         {
             Name = "Road",
             Weight = 2
+        });
+        _tiles.Add("OutdoorsGround_42", new Tile()
+        {
+            Name = "Water",
+            Weight = 20
         });
         _tiles.Add("Generic", new Tile()
         {
